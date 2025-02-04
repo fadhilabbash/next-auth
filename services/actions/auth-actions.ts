@@ -9,10 +9,16 @@ export const logout = async () => {
 
 export const logIn = async (formData: FormData) => {
   try {
-    //   const email = formData.get("email") as string;
-    //   const password = formData.get("password") as string;
-    await signIn("credentials", formData);
-    return redirect("/dashboard"); // Change "/dashboard" to your desired route
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: true,
+      redirectTo: "/dashboard",
+
+    });
+    // Change "/dashboard" to your desired route
   } catch (error) {
     // Signin can fail for a number of reasons, such as the user
     // not existing, or the user not having the correct role.
