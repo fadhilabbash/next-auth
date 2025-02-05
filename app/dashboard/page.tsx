@@ -1,18 +1,32 @@
 import { auth } from "@/auth";
 
-export default async function Page() {
+export default async function DashboardPage() {
   const session = await auth();
 
-  return (
-    <div className="h-[90vh] flex items-center justify-center bg-gray-100 p-6">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl">
-        <h1 className="text-3xl font-semibold text-center text-gray-700 mb-6">
-          Session Data
-        </h1>
-        <pre className="bg-gray-800 text-white p-6 rounded-lg font-mono overflow-x-auto">
-          {JSON.stringify(session, null, 2)}
-        </pre>
+  if (session?.user?.role === "admin") {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        You are an admin, welcome!
       </div>
+    );
+  }
+  return (
+    <div className="h-screen flex items-center justify-center">
+      You are not authorized to view this page!
     </div>
   );
 }
+
+//client side
+// "use client"
+// import { useSession } from "next-auth/react"
+
+// export default function DashboardPage() {
+//   const { data: session } = useSession()
+
+//   if (session?.user?.role === "admin") {
+//     return <div className="h-screen flex items-center justify-center">You are an admin, welcome!</div>;
+//   }
+
+//   return <div className="h-screen flex items-center justify-center">You are not authorized to view this page!</div>;
+// }
