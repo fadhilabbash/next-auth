@@ -14,7 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         user = await getUserFromDb(credentials.email as string);
         if (!user) {
           console.log("Invalid credentials.");
-          return null; 
+          return null;
         }
 
         console.log("Authenticated user:", user);
@@ -27,7 +27,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     authorized({ auth }) {
-      return !!auth?.user; 
+      return !!auth?.user;
+    },
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.accessToken = user.accessToken;
+        token.role = user.role; 
+      }
+      return token;
+    },
+    session({ session, token }) {
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.accessToken = token.accessToken as string;
+        //session.user.accessTokenExpires = token.accessTokenExpires as number;
+        session.user.role = token.role as string;
+      }
+      return session;
     },
   },
+
 });
