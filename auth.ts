@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { getUserFromDb } from "./lib/db";
+import { Session } from "inspector/promises";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -14,7 +15,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         user = await getUserFromDb(credentials.email as string);
         if (!user) {
           console.log("Invalid credentials.");
-          return null; 
+          return null;
         }
 
         console.log("Authenticated user:", user);
@@ -27,34 +28,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     authorized({ auth }) {
-      return !!auth?.user; 
+      return !!auth?.user;
+    },
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.accessToken = user.accessToken;
+        token.role = "Unknown"; 
+      }
+      return token;
+    },
+    session({ session, token }) {
+      if (token) {
+        session;
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.accessToken = token.accessToken as string;
+        //session.user.accessTokenExpires = token.accessTokenExpires as number;
+        session.user.role = token.role as string;
+      }
+      return session;
     },
   },
 });
-
-
-
-// callbacks: {
-//   authorized({ auth, request: { nextUrl } }) {
-//     const isLoggedIn = !!auth?.user;
-//     const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-//     if (isOnDashboard) {
-//       if (isLoggedIn) return true;
-//       return false; // Redirect unauthenticated users to login page
-//     } else if (isLoggedIn) {
-//       return Response.redirect(new URL('/dashboard', nextUrl));
-//     }
-//     return true;
-//   },
-// },
-// callbacks: {
-//   authorized({ auth, request: { nextUrl } }) {
-//     const isLoggedIn = !!auth?.user;
-//     const publicRoutes = ["/login", "/register"]; // Allow these routes for unauthenticated users
-//     const isPublic = publicRoutes.includes(nextUrl.pathname);
-
-//     if (isPublic) return true; // Allow access to public routes
-//     if (!isLoggedIn) return Response.redirect(new URL('/login', nextUrl)); // Redirect to login
-//     return true;
-//   },
-// },
