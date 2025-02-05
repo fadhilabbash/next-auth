@@ -1,9 +1,15 @@
 import { logIn } from "@/services/actions/auth-actions";
+import Image from "next/image";
 
 export default function LoginForm({ error }: { error?: string }) {
   return (
-    <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold text-center mb-4">Sign In</h2>
+    <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md rounded-tl-[80px] rounded-br-[80px]">
+      <div className="flex flex-col items-center justify-center">
+        <Image src="/nextauth.png" alt="" width={32} height={32} />
+        <h2 className="text-2xl font-semibold text-center mb-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">
+  Sign In
+</h2>
+      </div>
 
       {error && (
         <p className="mb-4 text-red-500 text-center">
@@ -13,7 +19,7 @@ export default function LoginForm({ error }: { error?: string }) {
 
       <form className="flex flex-col gap-4" action={logIn}>
         <label className="block">
-          <span className="text-gray-700">Email</span>
+          <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">Email</span>
           <input
             name="email"
             id="email"
@@ -24,7 +30,7 @@ export default function LoginForm({ error }: { error?: string }) {
         </label>
 
         <label className="block">
-          <span className="text-gray-700">Password</span>
+          <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">Password</span>
           <input
             name="password"
             id="password"
@@ -36,7 +42,7 @@ export default function LoginForm({ error }: { error?: string }) {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+          className="w-full  text-white py-2 rounded-xl rounded-tl-[80px] rounded-br-[80px]  transition bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
         >
           Sign In
         </button>
